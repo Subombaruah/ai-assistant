@@ -16,17 +16,25 @@
   <p id="response"></p>
 
   <script>
-    async function talk() {
-      const input = document.getElementById('userInput').value;
-      document.getElementById('response').innerText = "Thinking...";
+  async function talk() {
+    const input = document.getElementById('userInput').value;
+    document.getElementById('response').innerText = "Thinking...";
 
-      const reply = "I'm Ava! You said: " + input;
-      document.getElementById('response').innerText = reply;
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: input })
+    });
 
-      // Speak it
-      const utter = new SpeechSynthesisUtterance(reply);
-      speechSynthesis.speak(utter);
-    }
-  </script>
+    const data = await res.json();
+    const reply = data.reply;
+
+    document.getElementById('response').innerText = reply;
+
+    // Speak it
+    const utter = new SpeechSynthesisUtterance(reply);
+    speechSynthesis.speak(utter);
+  }
+</script>
 </body>
 </html>
