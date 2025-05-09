@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Assistant</title>
+</head>
+<body style="text-align: center; font-family: Arial, sans-serif;">
+  <h1>Hello! I’m your AI Assistant</h1>
+  <img src="https://i.ibb.co/VLP1qRf/character.png" alt="AI Character" width="200" />
+  <p><strong>Name:</strong> Ava</p>
+
+  <input type="text" id="userInput" placeholder="Say something..." style="width: 300px;" />
+  <button onclick="talk()">Send</button>
+
+  <p id="response"></p>
+
+  <script>
+    async function talk() {
+      const input = document.getElementById('userInput').value;
+      document.getElementById('response').innerText = "Thinking...";
+
+      const reply = "I'm Ava! You said: " + input;
+      document.getElementById('response').innerText = reply;
+
+      // Speak it
+      const utter = new SpeechSynthesisUtterance(reply);
+      speechSynthesis.speak(utter);
+    }
+  </script>
+</body>
+</html>
