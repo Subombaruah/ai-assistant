@@ -16,25 +16,38 @@
   <p id="response"></p>
 
   <script>
-  async function talk() {
-    const input = document.getElementById('userInput').value;
-    document.getElementById('response').innerText = "Thinking...";
+    async function talk() {
+      const input = document.getElementById('userInput').value;
+      const responseBox = document.getElementById('response');
+      responseBox.innerText = "Thinking...";
 
-    const res = await fetch('/api/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: input })
-    });
+      try {
+        const res = await fetch('https://ai-assistant-68uwigor9-subom-baruahs-projects.vercel.app/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: input })
+        });
 
-    const data = await res.json();
-    const reply = data.reply;
+        const contentType = res.headers.get('content-type');
 
-    document.getElementById('response').innerText = reply;
+        if (contentType && contentType.includes('application/json')) {
+          const data = await res.json();
+          const reply = data.reply || "Sorry, I didn't understand that.";
+          responseBox.innerText = reply;
 
-    // Speak it
-    const utter = new SpeechSynthesisUtterance(reply);
-    speechSynthesis.speak(utter);
-  }
-</script>
+          const utter = new SpeechSynthesisUtterance(reply);
+          speechSynthesis.speak(utter);
+        } else {
+          const errorText = await res.text();
+          responseBox.innerText = "Received unexpected response from the server.";
+          console.error("Non-JSON response:", errorText);
+        }
+      } catch (error) {
+        responseBox.innerText = "An error occurred. Please try again.";
+        console.error("Fetch error:", error);
+      }
+    }
+  </script>
 </body>
 </html>
+ 
